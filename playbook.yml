@@ -1,0 +1,44 @@
+---
+- name: installation vm local environnement CI
+  hosts: all
+  tasks: 
+    - name: ensure htop and g++-10
+      package: 
+        name: 
+          - htop
+          - g++-10
+          - cmake
+        state: present
+      become: yes
+      become_user: root
+
+    - name: git clone https://github.com/padget/blackci
+      git: 
+        repo: https://github.com/padget/blackci
+        dest: /home/vagrant/blackci
+
+    - name: git clone https://github.com/tsaarni/cpp-subprocess
+      git:
+        repo: https://github.com/tsaarni/cpp-subprocess
+        dest: /home/vagrant/cpp-subprocess
+        
+    - name: git clone https://github.com/jbeder/yaml-cpp
+      git: 
+        repo: https://github.com/jbeder/yaml-cpp
+        dest: /home/vagrant/yaml-cpp
+
+    - name: cmake on yaml-cpp
+      shell:
+        chdir: /home/vagrant/yaml-cpp  
+        cmd: cmake .
+      
+    - name: make on yaml-cpp
+      make: 
+        chdir: /home/vagrant/yaml-cpp
+
+    - name: make install on yaml-cpp
+      make: 
+        chdir: /home/vagrant/yaml-cpp
+        target: install
+      become: yes
+      become_user: root
