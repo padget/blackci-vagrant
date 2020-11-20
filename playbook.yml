@@ -2,26 +2,16 @@
 - name: installation vm local environnement CI
   hosts: all
   tasks: 
-    - name: ensure htop and g++-10
+    - name: ensure dev-packages present
       package: 
         name: 
           - htop
           - g++-10
-          - cmake
+          - libboost-all-dev
         state: present
       become: yes
       become_user: root
 
-    - name: git clone https://github.com/padget/blackci
-      git: 
-        repo: https://github.com/padget/blackci
-        dest: /home/vagrant/blackci
-
-    - name: git clone https://github.com/tsaarni/cpp-subprocess
-      git:
-        repo: https://github.com/tsaarni/cpp-subprocess
-        dest: /home/vagrant/cpp-subprocess
-        
     - name: git clone https://github.com/jbeder/yaml-cpp
       git: 
         repo: https://github.com/jbeder/yaml-cpp
@@ -42,3 +32,22 @@
         target: install
       become: yes
       become_user: root
+
+    - name: git clone https://github.com/padget/blackci
+      git: 
+        repo: https://github.com/padget/blackci
+        dest: /home/vagrant/blackci
+
+    - name: 'configuration user.email'
+      git_config:
+        name: user.email
+        repo: /home/vagrant/blackci
+        scope: local
+        value: 'padget.pro@gmail.com'
+
+    - name: 'configuration user.name'
+      git_config:
+        name: user.name
+        repo: /home/vagrant/blackci
+        scope: local
+        value: padget
