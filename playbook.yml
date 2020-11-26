@@ -6,8 +6,10 @@
       package: 
         name: 
           - htop
+          - cmake
           - g++-10
           - libboost-all-dev
+          - libfmt-dev
         state: present
       become: yes
       become_user: root
@@ -37,6 +39,16 @@
       git: 
         repo: https://github.com/padget/blackci
         dest: /home/vagrant/blackci
+
+    - name: git clone https://github.com/gabime/spdlog
+      git: 
+        repo: https://github.com/gabime/spdlog
+        dest: /home/vagrant/spdlog
+
+    - name: copy spdlog include into blackci
+      copy: 
+        src: /home/vagrant/spdlog/include
+        dest: /home/vagrant/blackci/include
 
     - name: 'configuration user.email'
       git_config:
