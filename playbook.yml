@@ -4,62 +4,32 @@
   tasks: 
     - name: ensure dev-packages present
       package: 
-        name: 
-          - htop
-          - cmake
-          - g++-10
-          - libboost-all-dev
-          - libfmt-dev
+        name:
+         - htop
+         - cmake
+         - g++-10
+         - libboost-all-dev
+         - libfmt-dev
+         - libspdlog-dev
+         - libyaml-cpp-dev
         state: present
       become: yes
       become_user: root
-
-    - name: git clone https://github.com/jbeder/yaml-cpp
-      git: 
-        repo: https://github.com/jbeder/yaml-cpp
-        dest: /home/vagrant/yaml-cpp
-
-    - name: cmake on yaml-cpp
-      shell:
-        chdir: /home/vagrant/yaml-cpp  
-        cmd: cmake .
       
-    - name: make on yaml-cpp
-      make: 
-        chdir: /home/vagrant/yaml-cpp
-
-    - name: make install on yaml-cpp
-      make: 
-        chdir: /home/vagrant/yaml-cpp
-        target: install
-      become: yes
-      become_user: root
 
     - name: git clone https://github.com/padget/blackci
       git: 
         repo: https://github.com/padget/blackci
         dest: /home/vagrant/blackci
 
-    - name: git clone https://github.com/gabime/spdlog
-      git: 
-        repo: https://github.com/gabime/spdlog
-        dest: /home/vagrant/spdlog
-
-    - name: copy spdlog include into blackci
-      copy: 
-        src: /home/vagrant/spdlog/include
-        dest: /home/vagrant/blackci/include
-
-    - name: 'configuration user.email'
+    - name: 'git configuration user.email and user.name'
       git_config:
-        name: user.email
         repo: /home/vagrant/blackci
         scope: local
-        value: 'padget.pro@gmail.com'
-
-    - name: 'configuration user.name'
-      git_config:
-        name: user.name
-        repo: /home/vagrant/blackci
-        scope: local
-        value: padget
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+      with_items: 
+        - name: user.email 
+          value: 'padget.pro@gmail.com'
+        - name: user.name 
+          value: 'padget'
